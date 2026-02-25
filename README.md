@@ -1,4 +1,4 @@
-# TASK-1: FakeStore E-Commerce App
+# TASK-A: FakeStore E-Commerce App
 
 A modern e-commerce application built with Next.js (App Router) that integrates with the FakeStore API.
 
