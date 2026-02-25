@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { getProductById } from "@/lib/api/products";
+import { getProductById } from "@/lib/api/products/products";
 import { Metadata } from "next";
 import AddToCart from "@/components/cart/AddToCart";
 

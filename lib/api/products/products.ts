@@ -1,6 +1,6 @@
 
-import { fetcher } from "./fetcher";
-import { Product } from "./types";
+import { fetcher } from "../fetcher";
+import { Product } from "../types";
 
 const BASE_URL =  process.env.NEXT_PUBLIC_API_URL;
 
@@ -10,7 +10,7 @@ export async function getAllProducts(
 ): Promise<Product[]> {
   const query = sort ? `?sort=${sort}` : "";
 
-  return fetcher<Product[]>(`${BASE_URL}/products${query}`, {
+  return fetcher<Product[]>(`/api/products${query}`, {
     
     cache: "no-store"
 
@@ -20,13 +20,13 @@ export async function getAllProducts(
 export async function getProductById(
   id: string
 ): Promise<Product> {
-  return fetcher<Product>(`${BASE_URL}/products/${id}`, {
+  return fetcher<Product>(`/api/products/${id}`, {
     cache: "no-store"
   });
 }
 
 export async function getAllCategories(): Promise<string[]> {
-  return fetcher<string[]>(`${BASE_URL}/products/categories`, {
+  return fetcher<string[]>(`/api/products/categories`, {
     cache: "no-store"
   });
 }
