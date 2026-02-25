@@ -19,6 +19,7 @@ export async function loginUser(
     {
       method: "POST",
       body: JSON.stringify(payload),
+      cache: "no-store",
     },
   );
 }
