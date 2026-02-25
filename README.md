@@ -1,37 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TASK-1: FakeStore E-Commerce App
 
-## Getting Started
+A modern e-commerce application built with Next.js (App Router) that integrates with the FakeStore API.
 
-First, run the development server:
+## Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This project demonstrates a full e-commerce flow including product browsing, authentication, protected routes, and user-specific cart management. It focuses on clean architecture, state persistence, and SEO best practices.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+----------
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+-   View all products
+-   Sorting and category filtering
+-   Dynamic product detail pages    
+-   Login support for multiple users (provided by FakeStore API)
+-   Protected routes (Cart accessible only when logged in)
+-   Add to cart
+-   Update cart item quantity
+-   Remove items from cart
+-   Cart persistence per logged-in user (stored locally using Zustand)
+-   SEO implementation:
+    -   Metadata
+    -   JSON-LD structured data
+    -   Dynamic sitemap
+-   Proxy API route for production compatibility
 
-## Learn More
+## Authentication
 
-To learn more about Next.js, take a look at the following resources:
+Users are authenticated using credentials provided by the FakeStore API.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Since the FakeStore API is public and not directly accessible in Vercel production, a proxy API route was implemented to securely forward requests.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Test User Credentials
 
-## Deploy on Vercel
+You can log in using the following sample users ( or any other user credentials from the FakeStore API ):
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    Username: johnd
+    Password: m38rmF$
+    
+    Username: mor_2314
+    Password: 83r5^_
+----------
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-"# fake-store" 
+## Cart Behavior
+
+-   Cart is available only for authenticated users.
+-   Each user has a separate cart tied to their user ID.
+-   Cart data persists in local storage per user.
+-   Cart automatically restores after page refresh when authenticated.
+    
+
+----------
+
+## Tech Stack
+
+-   Next.js (App Router)
+-   TypeScript
+-   Zustand (state management with persistence)
+-   Tailwind CSS
+-   FakeStore API (via proxy route)
+    
+
+----------
+
+## SEO Implementation
+
+-   Server-side metadata generation
+-   JSON-LD structured data for product and collection pages
+-   Dynamic sitemap generation for products
+    
+
+----------
+
+## Notes
+
+This project focuses on clean state management, proper authentication flow, user-scoped persistence, and production-ready SEO practices.
