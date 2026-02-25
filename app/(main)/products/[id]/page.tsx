@@ -41,7 +41,7 @@ export async function generateMetadata({
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params;
   const product = await getProductById(id);
-  
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
   if (!product) return notFound();
 
@@ -59,7 +59,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     },
     offers: {
       "@type": "Offer",
-      url: `https://domain.com/products/${product.id}`,
+      url: `${siteUrl}/products/${product.id}`,
       priceCurrency: "USD",
       price: product.price,
       availability: "https://schema.org/InStock",

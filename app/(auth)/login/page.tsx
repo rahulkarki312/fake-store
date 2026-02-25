@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../../../store/authStore";
+import { loginUser } from "@/lib/api/auth";
+import Image from "next/image";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -18,55 +20,34 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const res = await fetch("https://fakestoreapi.com/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data?.message || "Login failed");
-      }
+      const data = await loginUser({ username, password });
 
       login(data.token);
       router.push("/products");
-    } catch {
-      setError("Invalid username or password");
+    } catch (error: any) {
+      setError(error?.message || "Invalid username or password");
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-background px-4 py-12 overflow-hidden">
-
       {/* Background */}
       <div className="pointer-events-none absolute -top-20 -left-20 h-80 w-80 rounded-full bg-primary opacity-40 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-16 -right-16 h-72 w-72 rounded-full bg-secondary opacity-30 blur-3xl" />
 
       <div className="relative z-10 w-full max-w-md">
-
         {/* Logo */}
         <div className="mb-8 flex flex-col items-center">
-          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-md bg-primary shadow-soft">
-            <svg
-              width="28"
-              height="28"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-text"
-            >
-              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <path d="M16 10a4 4 0 0 1-8 0" />
-            </svg>
-          </div>
+         
+            <Image
+              src="/logo.png"
+              alt="FakeStore Logo"
+              width={40}
+              height={40}
+              className="object-contain border border-text-muted/50 rounded-full shadow-dark"
+            />
+          
 
           <h1 className="text-3xl font-bold tracking-tight text-text">
             Welcome back
@@ -78,7 +59,6 @@ export default function LoginPage() {
 
         {/* Card */}
         <div className="rounded-lg bg-surface p-8 shadow-soft border border-border">
-
           {/* Error */}
           {error && (
             <div className="mb-6 flex items-center gap-2 rounded-sm border border-error bg-error-bg px-4 py-3 text-sm text-error">
@@ -101,7 +81,6 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleLogin} className="flex flex-col gap-5">
-
             {/* Username */}
             <div className="flex flex-col gap-1.5">
               <label

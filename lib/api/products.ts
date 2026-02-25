@@ -2,7 +2,8 @@
 import { fetcher } from "./fetcher";
 import { Product } from "./types";
 
-const BASE_URL = "https://fakestoreapi.com";
+const BASE_URL =  process.env.NEXT_PUBLIC_API_URL;
+
 
 export async function getAllProducts(
   sort?: "asc" | "desc"
@@ -11,7 +12,6 @@ export async function getAllProducts(
 
   return fetcher<Product[]>(`${BASE_URL}/products${query}`, {
     next: { revalidate: 60 },
-    //  cache: "no-store",
 
   });
 }

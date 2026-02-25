@@ -46,6 +46,7 @@ export default async function ProductsPage({
 
   const products = await getAllProducts(sort);
   const categories = await getAllCategories();
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
   // JSON-LD structured data for collection
   const jsonLd = {
@@ -54,7 +55,7 @@ export default async function ProductsPage({
     name: "FakeStore Products",
     description:
       "Browse all products from FakeStore with categories, prices, and filters.",
-    hasPart:  products.slice(0, 5).map((p) => ({  // include sample products (only 5 for now) in collection
+    hasPart:  products.slice(0, 5).map((p) => ({  // including sample products (only 5 for now) in collection
       "@type": "Product",
       name: p.title,
       image: [p.image],
@@ -69,7 +70,7 @@ export default async function ProductsPage({
         "@type": "Offer",
         priceCurrency: "USD",
         price: p.price,
-        url: `https://domain.com/products/${p.id}`,
+        url: `${siteUrl}/products/${p.id}`,
         availability: "https://schema.org/InStock",
       },
     })),

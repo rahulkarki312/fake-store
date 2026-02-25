@@ -3,17 +3,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { jwtDecode } from "jwt-decode";
+import { User } from "@/lib/api/types";
 
 interface DecodedToken {
   sub: number;
-}
-
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  firstName: string;
-  lastName: string;
 }
 
 interface AuthState {

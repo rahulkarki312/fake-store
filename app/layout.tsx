@@ -3,10 +3,10 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "E-commerce App",
-    template: "%s | E-commerce App",
+    default: "Fake Store",
+    template: "%s | Fake Store",
   },
-  description: "An e-commerce dashboard built with Next.js",
+  description: "E-commerce dashboard",
 };
 
 export default function RootLayout({

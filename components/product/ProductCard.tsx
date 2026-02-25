@@ -4,11 +4,14 @@ import Link from "next/link";
 
 import AddToCart from "../cart/AddToCart";
 
+
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  
+
   return (
     <div className="group relative flex flex-col bg-surface border border-border rounded-2xl overflow-hidden shadow-soft hover:shadow-lg hover:-translate-y-1 transition-all duration-300 ease-out">
       

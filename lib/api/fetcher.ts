@@ -6,7 +6,7 @@ interface FetchOptions extends RequestInit {
 
 export async function fetcher<T>(
   url: string,
-  options?: FetchOptions
+  options?: FetchOptions,
 ): Promise<T> {
   const response = await fetch(url, {
     ...options,
@@ -21,9 +21,20 @@ export async function fetcher<T>(
 
     try {
       const errorBody = await response.json();
-      errorMessage = errorBody?.message || errorMessage;
-    } catch {
-      // response is not json
+      errorMessage =
+        errorBody?.message ||
+        errorBody?.error ||
+        JSON.stringify(errorBody) ||
+        errorMessage;
+    } catch (jsonError) {
+      try {
+        const text = await response.text();
+        if (text) {
+          errorMessage = text;
+        }
+      } catch {
+        errorMessage = response.statusText || errorMessage;
+      }
     }
 
     throw new ApiError(errorMessage, response.status);
