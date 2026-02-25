@@ -1,7 +1,8 @@
 import { getAllProducts, getAllCategories } from "@/lib/api/products";
-import ProductsClient from "@/components/product/ProductsClient";
+
 import SortControls from "@/components/product/SortControls";
 import { Metadata } from "next";
+import ProductsClient from "@/components/product/ProductsClient";
 
 interface ProductsPageProps {
   searchParams: Promise<{

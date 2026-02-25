@@ -75,8 +75,13 @@ You can log in using the following sample users ( or any other user credentials 
 ## Performance Note
 
 The application is deployed on Vercel’s free hosting tier.  
-Because a proxy route is used to handle API requests and the app runs on a free Vercel instance, some interactions (especially filtering or data-heavy operations) may feel slightly slow due to cold starts and serverless execution delays.
+Because a proxy route is used to handle API requests and the app runs on a free Vercel instance, some interactions (especially filtering or data-heavy operations) may feel slightly slow due to cold starts and serverless execution delays. The application performs smoothly when running in a local development environment.
 
+To run the project locally, create a .env.local file in the root directory and configure the following environment variables:
+
+    NEXT_PUBLIC_API_URL=https://fakestoreapi.com
+    NEXT_PUBLIC_SITE_URL=https://fake-store-by-rahul.vercel.app
+    
 
 ----------
 
