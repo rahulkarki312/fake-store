@@ -1,4 +1,4 @@
-import { getAllProducts } from "@/lib/api/products/products";
+import { getAllProducts } from "@/lib/api/products";
 
 export const runtime = "edge";
 
