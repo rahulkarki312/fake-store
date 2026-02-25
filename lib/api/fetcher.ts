@@ -11,6 +11,7 @@ export async function fetcher<T>(
   const response = await fetch(url, {
     ...options,
     headers: {
+       "User-Agent": "Mozilla/5.0",
       "Content-Type": "application/json",
       ...(options?.headers || {}),
     },
