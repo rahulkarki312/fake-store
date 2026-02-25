@@ -14,8 +14,10 @@ interface LoginResponse {
 export async function loginUser(
   payload: LoginRequest,
 ): Promise<LoginResponse> {
+  const timestamp = Date.now();
+  
   return fetcher<LoginResponse>(
-    `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/login?_=${timestamp}`,
     {
       method: "POST",
       body: JSON.stringify(payload),
