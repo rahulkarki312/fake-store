@@ -51,7 +51,7 @@ export default function AddToCart({ product }: Props) {
     <>
       <button
         onClick={handleButtonClick}
-        className="cursor-pointer mt-3 w-full bg-black text-white py-2 rounded-lg"
+        className=" mt-3 w-full bg-black text-white py-2 rounded-lg"
       >
         Add to Cart
       </button>

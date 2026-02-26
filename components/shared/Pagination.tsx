@@ -1,28 +1,17 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-
 
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
+  onPageChange: (page: number) => void;
 }
 
 export default function Pagination({
   currentPage,
   totalPages,
+  onPageChange,
 }: PaginationProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const updatePage = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    params.set("page", page.toString());
-
-    router.push(`/products?${params.toString()}`);
-  };
-
   return (
     <div className="flex justify-center gap-2 mt-8">
       {Array.from({ length: totalPages }, (_, i) => {
@@ -31,10 +20,10 @@ export default function Pagination({
         return (
           <button
             key={pageNumber}
-            onClick={() => updatePage(pageNumber)}
-            className={`cursor-pointer px-2 rounded-full border  ${
+            onClick={() => onPageChange(pageNumber)}
+            className={`cursor-pointer px-2 rounded-full border ${
               currentPage === pageNumber
-                ? "bg-black  text-white"
+                ? "bg-black text-white"
                 : "hover:bg-gray-100"
             }`}
           >

@@ -1,6 +1,5 @@
 import { getAllProducts, getAllCategories } from "@/lib/api/products";
 
-import SortControls from "@/components/product/SortControls";
 import { Metadata } from "next";
 import ProductsClient from "@/components/product/ProductsClient";
 

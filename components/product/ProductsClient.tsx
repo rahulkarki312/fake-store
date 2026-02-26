@@ -4,7 +4,7 @@ import { useMemo, useState, useTransition, KeyboardEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ProductCard from "@/components/product/ProductCard";
 import Pagination from "@/components/shared/Pagination";
-import SortControls from "@/components/product/SortControls";
+
 
 import { Product } from "@/lib/api/types";
 import ProductsClientSkeleton from "./ProductsClientSkeleton";
@@ -32,8 +32,9 @@ export default function ProductsClient({
   const searchTerm = searchParams.get("search") || "";
   const minPrice = searchParams.get("minPrice") || "";
   const maxPrice = searchParams.get("maxPrice") || "";
+  const currentSort = (searchParams.get("sort") as "asc" | "desc") || sort;
 
-  // Local draft state (important change)
+  // Draft state
   const [draftCategory, setDraftCategory] = useState(selectedCategory);
   const [draftSearch, setDraftSearch] = useState(searchTerm);
   const [draftMinPrice, setDraftMinPrice] = useState(minPrice);
@@ -42,22 +43,47 @@ export default function ProductsClient({
   const [loading, setLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const applyFilters = () => {
+  const pushWithParams = (params: URLSearchParams) => {
     setLoading(true);
-
-    const params = new URLSearchParams();
-
-    if (draftCategory !== "all") params.set("category", draftCategory);
-    if (draftSearch.trim()) params.set("search", draftSearch);
-    if (draftMinPrice) params.set("minPrice", draftMinPrice);
-    if (draftMaxPrice) params.set("maxPrice", draftMaxPrice);
-
-    params.set("page", "1");
 
     startTransition(() => {
       router.push(`/products?${params.toString()}`);
       setLoading(false);
     });
+  };
+
+  const applyFilters = () => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (draftCategory !== "all") params.set("category", draftCategory);
+    else params.delete("category");
+
+    if (draftSearch.trim()) params.set("search", draftSearch);
+    else params.delete("search");
+
+    if (draftMinPrice) params.set("minPrice", draftMinPrice);
+    else params.delete("minPrice");
+
+    if (draftMaxPrice) params.set("maxPrice", draftMaxPrice);
+    else params.delete("maxPrice");
+
+    params.set("page", "1");
+
+    pushWithParams(params);
+  };
+
+  const updateSort = (newSort: "asc" | "desc") => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("sort", newSort);
+    params.set("page", "1");
+    pushWithParams(params);
+  };
+
+  const updatePage = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", page.toString());
+
+    pushWithParams(params);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -71,11 +97,16 @@ export default function ProductsClient({
     setDraftSearch("");
     setDraftMinPrice("");
     setDraftMaxPrice("");
-    router.push("/products");
+
+    setLoading(true);
+    startTransition(() => {
+      router.push("/products");
+      setLoading(false);
+    });
   };
 
   const filteredProducts = useMemo(() => {
-    return products.filter((product) => {
+    let result = products.filter((product) => {
       const matchesCategory =
         selectedCategory === "all" || product.category === selectedCategory;
       const matchesSearch = product.title
@@ -87,25 +118,23 @@ export default function ProductsClient({
         maxPrice === "" || product.price <= Number(maxPrice);
 
       return (
-        matchesCategory &&
-        matchesSearch &&
-        matchesMinPrice &&
-        matchesMaxPrice
+        matchesCategory && matchesSearch && matchesMinPrice && matchesMaxPrice
       );
     });
-  }, [products, selectedCategory, searchTerm, minPrice, maxPrice]);
+
+    return result;
+  }, [products, selectedCategory, searchTerm, minPrice, maxPrice, currentSort]);
 
   const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
   const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
   const paginatedProducts = filteredProducts.slice(
     startIndex,
-    startIndex + PRODUCTS_PER_PAGE
+    startIndex + PRODUCTS_PER_PAGE,
   );
 
   const hasActiveFilters =
     selectedCategory !== "all" || searchTerm || minPrice || maxPrice;
 
-  // Show skeleton while loading
   if (loading || isPending) {
     return <ProductsClientSkeleton />;
   }
@@ -115,7 +144,6 @@ export default function ProductsClient({
       {/* Filter Bar */}
       <div className="bg-surface rounded-2xl p-5 shadow-soft border border-border-muted">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-          
           {/* Category */}
           <div>
             <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide">
@@ -157,7 +185,6 @@ export default function ProductsClient({
             </label>
             <input
               type="number"
-              placeholder="0"
               className="w-full border rounded-xl px-4 py-2.5 text-sm"
               value={draftMinPrice}
               onChange={(e) => setDraftMinPrice(e.target.value)}
@@ -172,7 +199,6 @@ export default function ProductsClient({
             </label>
             <input
               type="number"
-              placeholder="Any"
               className="w-full border rounded-xl px-4 py-2.5 text-sm"
               value={draftMaxPrice}
               onChange={(e) => setDraftMaxPrice(e.target.value)}
@@ -185,7 +211,29 @@ export default function ProductsClient({
             <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide">
               Sort
             </label>
-            <SortControls currentSort={sort} />
+            <div className="flex gap-2">
+              <button
+                onClick={() => updateSort("asc")}
+                className={`px-4 py-2 border rounded-md text-sm ${
+                  currentSort === "asc"
+                    ? "bg-black text-white"
+                    : "hover:bg-gray-100"
+                }`}
+              >
+                Sort Asc
+              </button>
+
+              <button
+                onClick={() => updateSort("desc")}
+                className={`px-4 py-2 border rounded-md text-sm ${
+                  currentSort === "desc"
+                    ? "bg-black text-white"
+                    : "hover:bg-gray-100"
+                }`}
+              >
+                Sort Desc
+              </button>
+            </div>
           </div>
         </div>
 
@@ -193,16 +241,13 @@ export default function ProductsClient({
         <div className="flex items-center justify-between pt-4">
           <button
             onClick={applyFilters}
-            className="cursor-pointer px-5 py-2 rounded-xl bg-primary text-sm font-medium"
+            className="px-5 py-2 rounded-xl bg-primary text-sm font-medium"
           >
             Apply Filters
           </button>
 
           {hasActiveFilters && (
-            <button
-              onClick={resetFilters}
-              className="text-sm text-text-muted"
-            >
+            <button onClick={resetFilters} className="text-sm text-text-muted">
               Clear filters
             </button>
           )}
@@ -228,9 +273,12 @@ export default function ProductsClient({
         </div>
       )}
 
-      {/* Pagination */}
       {totalPages > 1 && (
-        <Pagination currentPage={currentPage} totalPages={totalPages} />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={updatePage}
+        />
       )}
     </div>
   );
